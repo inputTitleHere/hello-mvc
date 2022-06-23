@@ -81,6 +81,33 @@ public class MemberDao {
 	 * 2. 쿼리 실행 executeUpdate - int 반환
 	 * 3. PreparedStatement 객체 메모리 해제.
 	 */
+	public int updateMember(Connection conn, Member member) {
+		PreparedStatement pstmt=null;
+		int result=0;
+		String sql=prop.getProperty("updateMember");
+		
+		// updateMember = update member set password=?,member_name=?, gender=?, birthday=?,email=?,phone=?,hobby=? where member_id=?
+		try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, member.getPassword());
+			pstmt.setString(2, member.getMemberName());
+			pstmt.setString(3, member.getGender()!=null?member.getGender().name():null);
+			pstmt.setDate(4, member.getBirthday());
+			pstmt.setString(5, member.getEmail());
+			pstmt.setString(6, member.getPhone());
+			pstmt.setString(7, member.getHobby());
+			pstmt.setString(8, member.getMemberId());
+			
+			result=pstmt.executeUpdate();
+			
+		}catch(SQLException e) {
+			throw new MemberException("정보수정 오류",e); // service에 예외를 던진다. -- 비즈니스를 설명가능한 구체적 커스텀 예외로 전환해서 던진다.
+		}finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
 	public int insertMember(Connection conn, Member member) {
 		PreparedStatement pstmt=null;
 		int result=0;

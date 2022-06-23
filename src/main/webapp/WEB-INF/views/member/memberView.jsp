@@ -7,13 +7,19 @@
 <%
 Member member = (Member)session.getAttribute("loginMember");
 SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd");
-String dateString = sdf.format(member.getBirthday());
+String dateString;
+if(member.getBirthday()!=null){
+dateString = sdf.format(member.getBirthday());	
+}
+else{
+	dateString="1900-01-01";
+}
 System.out.println(dateString);
 %>
 
 <section id=enroll-container>
 	<h2>회원 정보</h2>
-	<form name="memberUpdateFrm" method="post">
+	<form name="memberUpdateFrm" action="<%=request.getContextPath()%>/member/memberView" method="POST">
 		<table>
 			<tr>
 				<th>아이디<sup>*</sup></th>
@@ -61,13 +67,13 @@ System.out.println(dateString);
 			<tr>
 				<th>포인트</th>
 				<td>	
-					<input type="text" placeholder="" name="point" id="point" value="<%=member.getPhone() %>" readonly><br>
+					<input type="text" placeholder="" name="point" id="point" value="<%=member.getPoint()%>" readonly><br>
 				</td>
 			</tr>
 			<tr>
 				<th>성별 </th>
 				<td>
-			       		 <input type="radio" name="gender" id="gender0" value="M" <%="M".equals(member.getGender().toString())? "checked":"" %>>
+			       <input type="radio" name="gender" id="gender0" value="M" <%="M".equals(member.getGender().toString())? "checked":"" %>>
 						 <label for="gender0">남</label>
 						 <input type="radio" name="gender" id="gender1" value="F" <%="F".equals(member.getGender().toString())? "checked":"" %>>
 						 <label for="gender1">여</label>
@@ -86,8 +92,25 @@ System.out.println(dateString);
 				</td>
 			</tr>
 		</table>
-        <input type="button" onclick="updateMember();" value="정보수정"/>
+        <input type="submit" value="정보수정"/>
         <input type="button" onclick="deleteMember();" value="탈퇴"/>
 	</form>
 </section>
+<form action="" name="memberDelFrm"></form>
+<script>
+
+/*
+ * POST형식 /member/memberDelete 서블릿 실행
+ *	memberDelFrm 제출을 하도록
+ *	과제 : 
+ */
+
+const deleteMember=()=>{
+	
+};
+
+</script>
+
+
+
 <%@ include file="/WEB-INF/views/common/footer.jsp" %>

@@ -18,7 +18,7 @@ import com.kh.mvc.member.model.service.MemberService;
 /**
  * Servlet implementation class MemberEnrollServlet
  */
-@WebServlet("/member/enroll")
+@WebServlet("/member/memberEnroll")
 public class MemberEnrollServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private MemberService memberService = new MemberService();

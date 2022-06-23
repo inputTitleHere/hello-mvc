@@ -9,6 +9,9 @@
 				<th>아이디<sup>*</sup></th>
 				<td>
 					<input type="text" placeholder="4글자이상" name="memberId" id="_memberId" required value="asdf">
+					<input type="button" value="중복검사" onclick="checkIdDuplicate();">
+					<input type="hidden" id="idValid" value="0">
+					<%-- 중복검사전 = 0, 중복검사 후(유효한 id) = 1 --%>
 				</td>
 			</tr>
 			<tr>
@@ -72,7 +75,38 @@
 	</form>
 </section>
 
+
+<form action="<%=request.getContextPath()%>/member/checkIdDuplicate" name="checkIdDuplicateFrm">
+	<input type="hidden" name="memberId" />
+</form>
+
 <script>
+
+// 사용자 입력 id 중복여부 검사.
+// 폼을 팝업에서 제출.
+const checkIdDuplicate=()=>{
+	const memberId=document.querySelector('#_memberId');
+	if(!/^[a-zA-Z0-9]{4,}$/.test(memberId.value)){
+		alert("유효한 아이디를 입력해주세요");
+		memberId.select();
+		return;
+	}
+	
+	// popup 제어
+	const title ="checkIdDuplicatePopup";
+	const spec="width=300px, height=300px";
+	const popup = open("", title, spec);  // popup 객체에 window 객체 저장.
+	
+	// form제어
+	const frm = document.checkIdDuplicateFrm;
+	frm.target=title; // 폼을 제출대상이 현재 윈도우가 아닌 팝업으로 지정. a target="_self"(현재페이지) // a target="_blank"(새 탭))
+	frm.memberId.value=memberId.value;
+	// 앞의 frm은 input:hidden.value이고 뒤의 memberId.value는 memberEnrollFrm의 것이다. 
+	frm.submit();
+};
+
+
+
 // 비밀번호 일치여부 검사
 
 document.querySelector("#passwordCheck").onblur=(e)=>{
@@ -83,6 +117,12 @@ document.querySelector("#passwordCheck").onblur=(e)=>{
 		password.select();
 	}
 };
+
+document.querySelector("#_memberId").onchange=(e)=>{
+	document.querySelector("#idValid").value=0;
+};
+
+
 // 폼 내용 무결검사.
 document.memberEnrollFrm.onsubmit=(e)=>{
 	const memberId = document.querySelector("#_memberId");
@@ -91,6 +131,13 @@ document.memberEnrollFrm.onsubmit=(e)=>{
 		memberId.select();
 		return false;
 	}
+	
+	const idValid=document.querySelector("#idValid");
+	if(idValid.value!=="1"){
+		alert("아이디 중복검사를 해주세요");
+		return false;
+	}
+	
 	
 	const password = document.querySelector("#_password");
 	if(!/^[a-zA-Z0-9`~!@#$%^&*()]{4,}$/.test(password.value)){

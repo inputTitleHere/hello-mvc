@@ -47,6 +47,23 @@ public class MemberService {
 		
 		return result;
 	}
+
+	public int updateMember(Member member) {
+		Connection conn = getConnection();
+		int result=0;
+		
+		try {
+			result=memberDao.updateMember(conn, member);
+			commit(conn); // 성공시 커밋
+		}catch(Exception e) {
+			rollback(conn); // 실패시 롤백
+			throw e; // controller에 예외를 던진다.(그래야 controller가 파악한다)
+		}finally {
+			close(conn);
+		}
+		
+		return result;
+	}
 	
 	
 	

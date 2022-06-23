@@ -2,6 +2,11 @@ package com.kh.mvc.member.model.exception;
 
 public class MemberException extends RuntimeException{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public MemberException() {
 		super();
 		// TODO Auto-generated constructor stub
