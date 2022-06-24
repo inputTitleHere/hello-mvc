@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import com.kh.mvc.member.model.dto.Gender;
@@ -52,18 +54,7 @@ public class MemberDao {
 			
 			rset=pstmt.executeQuery();
 			while(rset.next()) {
-				memberId = rset.getString("member_id");
-				String password = rset.getString("password");
-				String memberName = rset.getString("member_name");
-				MemberRole memberRole = MemberRole.valueOf(rset.getString("member_role"));
-				Gender gender = Gender.valueOf(rset.getString("gender"));
-				Date birthday = rset.getDate("birthday");
-				String email = rset.getString("email");
-				String phone = rset.getString("phone");
-				String hobby = rset.getString("hobby");
-				int point = rset.getInt("point");
-				Timestamp enrollDate = rset.getTimestamp("enroll_date");
-				member=new Member(memberId, password, memberName, memberRole, gender, birthday, email, phone, hobby, point, enrollDate);
+				member = handleMemberResultSet(rset);
 			}
 			
 		} catch (SQLException e) {
@@ -72,6 +63,25 @@ public class MemberDao {
 			close(rset);
 			close(pstmt);
 		}
+		return member;
+	}
+
+	private Member handleMemberResultSet(ResultSet rset) throws SQLException {
+		Member member;
+		String memberId = rset.getString("member_id");
+		String password = rset.getString("password");
+		String memberName = rset.getString("member_name");
+		MemberRole memberRole = MemberRole.valueOf(rset.getString("member_role"));
+		
+		String _gender = rset.getString("gender");
+		Gender gender = _gender!=null?Gender.valueOf(_gender):null; // enum에 null전달 방지
+		Date birthday = rset.getDate("birthday");
+		String email = rset.getString("email");
+		String phone = rset.getString("phone");
+		String hobby = rset.getString("hobby");
+		int point = rset.getInt("point");
+		Timestamp enrollDate = rset.getTimestamp("enroll_date");
+		member=new Member(memberId, password, memberName, memberRole, gender, birthday, email, phone, hobby, point, enrollDate);
 		return member;
 	}
 
@@ -85,18 +95,17 @@ public class MemberDao {
 		PreparedStatement pstmt=null;
 		int result=0;
 		String sql=prop.getProperty("updateMember");
-		
-		// updateMember = update member set password=?,member_name=?, gender=?, birthday=?,email=?,phone=?,hobby=? where member_id=?
+		// password 없앰
+		// updateMember = update member set member_name=?, gender=?, birthday=?,email=?,phone=?,hobby=? where member_id=?
 		try {
 			pstmt=conn.prepareStatement(sql);
-			pstmt.setString(1, member.getPassword());
-			pstmt.setString(2, member.getMemberName());
-			pstmt.setString(3, member.getGender()!=null?member.getGender().name():null);
-			pstmt.setDate(4, member.getBirthday());
-			pstmt.setString(5, member.getEmail());
-			pstmt.setString(6, member.getPhone());
-			pstmt.setString(7, member.getHobby());
-			pstmt.setString(8, member.getMemberId());
+			pstmt.setString(1, member.getMemberName());
+			pstmt.setString(2, member.getGender()!=null?member.getGender().name():null);
+			pstmt.setDate(3, member.getBirthday());
+			pstmt.setString(4, member.getEmail());
+			pstmt.setString(5, member.getPhone());
+			pstmt.setString(6, member.getHobby());
+			pstmt.setString(7, member.getMemberId());
 			
 			result=pstmt.executeUpdate();
 			
@@ -129,6 +138,72 @@ public class MemberDao {
 			
 		}catch(SQLException e) {
 			throw new MemberException("회원가입 오류",e); // service에 예외를 던진다. -- 비즈니스를 설명가능한 구체적 커스텀 예외로 전환해서 던진다.
+		}finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	public int updatePassword(Connection conn, Member member, String newPassword) {
+		//---------------------------------- DML이다. ---------------------------------- // 
+		PreparedStatement pstmt=null;
+		int result=0;
+		String sql=prop.getProperty("updatePassword");
+		// updatePassword = update member set password=? where member_id=?
+		try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1,newPassword);
+			pstmt.setString(2,member.getMemberId());
+			
+			result=pstmt.executeUpdate();
+			
+		}catch(SQLException e) {
+			throw new MemberException("비밀번호수정 오류",e); // service에 예외를 던진다. -- 비즈니스를 설명가능한 구체적 커스텀 예외로 전환해서 던진다.
+		}finally {
+			close(pstmt);
+		}
+		return result;
+		
+	}
+
+	public List<Member> findAll(Connection conn) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<Member>list = new ArrayList<Member>();
+		String sql = prop.getProperty("findAll");
+		
+		try {
+			pstmt=conn.prepareStatement(sql);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				Member member = handleMemberResultSet(rset);
+				list.add(member);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			close(rset);
+			close(pstmt);
+		}
+		return list;
+	}
+
+	public int deleteMember(Connection conn, String memberId) {
+		
+		PreparedStatement pstmt=null;
+		int result=0;
+		String sql=prop.getProperty("deleteMember");
+		//deleteMember = delete from member where member_id =?
+
+		try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1,memberId);
+			
+			result=pstmt.executeUpdate();
+			
+		}catch(SQLException e) {
+			throw new MemberException("비밀번호수정 오류",e); // service에 예외를 던진다. -- 비즈니스를 설명가능한 구체적 커스텀 예외로 전환해서 던진다.
 		}finally {
 			close(pstmt);
 		}

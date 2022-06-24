@@ -35,7 +35,7 @@ public class EncodingFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 //		encodingType="utf-8";
 		request.setCharacterEncoding(encodingType);
-		System.out.println("[EncodingFilter : "+encodingType+" 처리]");
+//		System.out.println("[EncodingFilter : "+encodingType+" 처리]");
 		
 		chain.doFilter(request, response);
 	}
@@ -45,7 +45,7 @@ public class EncodingFilter implements Filter {
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
 		this.encodingType=fConfig.getInitParameter("encodingType");
-		System.out.println(encodingType);
+//		System.out.println(encodingType);
 	}
 
 }

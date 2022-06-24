@@ -27,18 +27,7 @@ System.out.println(dateString);
 					<input type="text" name="memberId" id="memberId" value="<%=member.getMemberId() %>" readonly>
 				</td>
 			</tr>
-			<tr>
-				<th>패스워드<sup>*</sup></th>
-				<td>
-					<input type="password" name="password" id="password" value="<%=member.getPassword() %>" required>
-				</td>
-			</tr>
-			<tr>
-				<th>패스워드확인<sup>*</sup></th>
-				<td>	
-					<input type="password" id="passwordCheck" value="<%=member.getPassword() %>" required><br>
-				</td>
-			</tr> 
+			<!-- 패스워드 칸 지움 -->
 			<tr>
 				<th>이름<sup>*</sup></th>
 				<td>	
@@ -93,11 +82,18 @@ System.out.println(dateString);
 			</tr>
 		</table>
         <input type="submit" value="정보수정"/>
+        <input type="button" value="비밀번호 변경" onclick="updatePassword();"/>
         <input type="button" onclick="deleteMember();" value="탈퇴"/>
 	</form>
 </section>
-<form action="" name="memberDelFrm"></form>
+<form action="<%=request.getContextPath()%>/member/memberDelete" name="memberDelFrm" style="display:none;">
+	<input type="text" name="memberId" id="memberId" value="<%=member.getMemberId() %>" readonly>
+</form>
 <script>
+
+const updatePassword=()=>{
+	location.href='<%=request.getContextPath()%>/member/passwordUpdate';
+};
 
 /*
  * POST형식 /member/memberDelete 서블릿 실행
@@ -106,8 +102,42 @@ System.out.println(dateString);
  */
 
 const deleteMember=()=>{
-	
+	const bool = confirm("정말로 회원 탈퇴를 하시겠습니까?");
+	if(bool){
+		document.memberDelFrm.submit();
+	}
 };
+
+document.memberUpdateFrm.onsubmit=(e)=>{
+	const memberId = document.querySelector("#_memberId");
+	if(!/^[a-zA-Z0-9]{4,}$/.test(memberId.value)){
+		alert("아이디는 영문 숫자로 구성되어 최소 4자리 이상입니다.");
+		memberId.select();
+		return false;
+	}
+	
+	const idValid=document.querySelector("#idValid");
+	if(idValid.value!=="1"){
+		alert("아이디 중복검사를 해주세요");
+		return false;
+	}
+	
+	
+	const memberName=document.querySelector("#memberName");
+	if(!/^[가-힣]{2,}$/.test(memberName.value)){
+		alert("한글 2글자 이상 입력해주세요.");
+		memberName.select();
+		return false;
+	}
+	const phone=document.querySelector("#phone");
+	if(!/^010[0-9]{8}$/.test(phone.value)){
+		alert("유효한 전화번호를 입력하세요.");
+		phone.select();
+		return false;
+	}
+};
+
+
 
 </script>
 

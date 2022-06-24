@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.kh.mvc.common.HelloMvcUtils;
 import com.kh.mvc.member.model.dto.Gender;
 import com.kh.mvc.member.model.dto.Member;
 import com.kh.mvc.member.model.service.MemberService;
@@ -38,7 +39,7 @@ public class MemberEnrollServlet extends HttpServlet {
 			
 			// 2 사용자 입력값 처리
 			String memberId = request.getParameter("memberId");
-			String password = request.getParameter("password");
+			String password = HelloMvcUtils.getEncryptedPassword(request.getParameter("password"),memberId);
 			String memberName = request.getParameter("memberName");
 			String _gender = request.getParameter("gender");
 			String _birthday = request.getParameter("birthday");

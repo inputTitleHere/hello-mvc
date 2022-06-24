@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 
+import com.kh.mvc.common.HelloMvcUtils;
 import com.kh.mvc.member.model.dto.Member;
 import com.kh.mvc.member.model.service.MemberService;
 
@@ -32,21 +33,21 @@ public class MemberLoginServlet extends HttpServlet {
 			
 			//2 사용자 입력 처리
 			String memberId=request.getParameter("memberId");
-			String password = request.getParameter("password");
+			String password =  HelloMvcUtils.getEncryptedPassword(request.getParameter("password"),memberId);
 			String saveId = request.getParameter("saveId");
-			System.out.println("member id = "+memberId);
-			System.out.println("password = "+password);
-			System.out.println("saveId = "+saveId); // "on" || null
+//			System.out.println("member id = "+memberId);
+//			System.out.println("password = "+password);
+//			System.out.println("saveId = "+saveId); // "on" || null
 			
 			//3 비즈니스 로직(처리로직) -- 로그인 여부 판단
 			// memberId를 기반으로 DB에 가서 조회해온다.
 			
 			
 			Member member = memberService.findById(memberId);
-			System.out.println("member@MemberLoginServlet = "+member);
+//			System.out.println("member@MemberLoginServlet = "+member);
 					
 			HttpSession session = request.getSession();
-			System.out.println(session.getId());
+//			System.out.println(session.getId());
 			
 			
 			// 
