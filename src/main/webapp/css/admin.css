@@ -12,7 +12,7 @@ section#memberList-container div#numPerPage-container{float:right; margin-top: 1
 section#memberList-container form#numPerPageFrm{display:inline;}
 
 /*페이징 : 페이지바 */
-section#memberList-container div#pageBar{margin-top:10px; text-align:center; background-color:rgba(0, 188, 212, 0.3);}
-section#memberList-container div#pageBar span.cPage{color: #0066ff; margin-right: 5px;}
-section#memberList-container div#pageBar a{margin-right: 5px; text-decoration: none;}
-section#memberList-container div#pageBar a:hover {text-decoration: underline;}
+section#memberList-container div#pagebar{margin-top:10px; text-align:center; background-color:rgba(0, 188, 212, 0.3);}
+section#memberList-container div#pagebar span.cPage{color: #0066ff; margin-right: 5px;}
+section#memberList-container div#pagebar a{margin-right: 5px; text-decoration: none;}
+section#memberList-container div#pagebar a:hover {text-decoration: underline;}

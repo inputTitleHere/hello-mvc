@@ -33,5 +33,68 @@ public class HelloMvcUtils {
 		
 		return encryptedPwd;
 	}
+
+	/**
+	 * totalPage = 전체 페이지 수
+	 * pagebarSize = 한 페이지에 표시할 페이지 번호 개수
+	 * pagebarStart ~ pagebarEnd
+	 * pageNo = 증감변수
+	 * 
+	 * 1. 이전영역
+	 * 2. pageNo영역
+	 * 3. 다음영역
+	 */
+	public static String getPagebar(int cPage, int numPerPage, int totalContent, String url) {
+		StringBuilder pagebar = new StringBuilder();
+		url += (url.indexOf("?")<0) ? "?cPage=" : "&cPage="; //(Get request uri)에다가 쿼리 구문 추가.
+		int totalPage = (int)Math.ceil((double)totalContent/numPerPage);
+		int pagebarSize=5;
+		int pagebarStart = ((cPage-1)/pagebarSize*pagebarSize)+1;
+		int pagebarEnd = pagebarStart+pagebarSize-1;
+		int pageNo = pagebarStart;
+		
+		// 이전영역 : 최초 페이지 넘버가 1(맨앞)이면 "다음"을 안붙임.
+		if(pageNo==1) {
+			//아무것도 안함
+		}else {
+			pagebar.append("<a href='"+url+(pageNo-1)+"'>이전</a>\n"); 
+		}
+		// pageNo 영역
+		while(pageNo<=pagebarEnd&&pageNo<=totalPage) {
+			if(pageNo==cPage) {
+				pagebar.append("<span class='cPage'>"+pageNo+"</span>\n");
+			}else { // 현재페이지가 아닌 경우
+				pagebar.append("<a href='"+url+pageNo+"'>"+pageNo+"</a>\n");
+			}
+			pageNo++;
+		}
+		// 다음영역
+		if(pageNo>totalPage) {
+			//아무것도 안함.
+		}else {
+			pagebar.append("<a href='"+url+pageNo+"'>다음</a>\n");
+		}
+		return pagebar.toString();
+	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

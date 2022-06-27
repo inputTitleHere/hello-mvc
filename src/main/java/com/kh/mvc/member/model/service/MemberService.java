@@ -4,6 +4,7 @@ import com.kh.mvc.member.model.dao.MemberDao;
 import com.kh.mvc.member.model.dto.Member;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
 import static com.kh.mvc.common.JdbcTemplate.*;
 
@@ -84,9 +85,9 @@ public class MemberService {
 		return result;
 	}
 
-	public List<Member> findAll() {
+	public List<Member> findAll(Map<String, Object> param) {
 		Connection conn = getConnection();
-		List<Member>list = memberDao.findAll(conn);
+		List<Member>list = memberDao.findAll(conn,param);
 		close(conn);
 		return list;
 	}
@@ -109,6 +110,27 @@ public class MemberService {
 		return result;
 		
 		
+	}
+
+	public int getTotalContent() {
+		Connection conn = getConnection();
+		int totalContent = memberDao.getTotalContent(conn);
+		close(conn);
+		return totalContent;
+	}
+
+	public List<Member> findMemberLike(Map<String, Object> param) {
+		Connection conn = getConnection();
+		List<Member>list = memberDao.findMemberLike(conn,param);
+		close(conn);
+		return list;
+	}
+
+	public int getTotalContentLike(Map<String, Object> param) {
+		Connection conn = getConnection();
+		int totalContent = memberDao.getTotalContentLike(conn, param);
+		close(conn);
+		return totalContent;
 	}
 	
 	
