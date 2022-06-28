@@ -44,7 +44,7 @@ div#search-gender{
 
 </style>
 <script>
-window.onload=(e)=>{
+window.addEventListener('load',(e)=>{
 	document.querySelector("select#searchType").onchange=(e)=>{
 		document.querySelectorAll(".search-type").forEach((div,index)=>{
 			div.style.display="none";
@@ -57,7 +57,7 @@ window.onload=(e)=>{
 		}
 		document.querySelector(`#search-\${id}`).style.display="inline-block";
 	};
-};
+});
 </script>	
 <section id="memberList-container">
 	<h2>회원관리</h2>
@@ -118,7 +118,15 @@ window.onload=(e)=>{
 			<tr>
 				<td><%=member.getMemberId()%></td>
 				<td><%=member.getMemberName()%></td>
-				<td><%=member.getMemberRole().name()%></td>
+				
+				<%-- <td><%=member.getMemberRole().name()%></td> --%>
+				<td>
+					<select class="member-role" data-member-id="<%=member.getMemberId() %>">
+						<option value="A" <%=MemberRole.A==member.getMemberRole()?"selected":""%>>관리자</option>
+						<option value="U" <%=MemberRole.U==member.getMemberRole()?"selected":""%>>일반</option>
+					</select>
+				</td>
+				
 				<td><%=member.getGender() != null ? member.getGender().name() : "NULL"%></td>
 				<td><%=member.getBirthday() != null ? sdf.format(member.getBirthday()) : "NULL"%></td>
 				<td><%=member.getEmail()%></td>
@@ -139,4 +147,35 @@ window.onload=(e)=>{
 	</div>
 
 </section>
+<form action="<%= request.getContextPath() %>/admin/memberRoleUpdate" method="POST" name="memberRoleUpdateFrm">
+	<input type="hidden" name="memberId" />
+	<input type="hidden" name="memberRole" />
+</form>
+
+
+<script>
+document.querySelectorAll(".member-role").forEach((select,index)=>{
+	select.onchange=(e)=>{
+		console.log(e.target.dataset.memberId, e.target.value);
+		
+		if(confirm(`해당 회원의 권한을 \${e.target.value}으로 변경하시겠습니까?`)){ // JSP에서 $사용할려면 escape처리를 해줘야한다.
+			const frm = document.memberRoleUpdateFrm;
+			frm.memberId.value=e.target.dataset.memberId;
+			frm.memberRole.value=e.target.value;
+			frm.submit();
+		}
+		else{
+			// 원상복구 코드
+			e.target.querySelector("[selected]").selected=true;
+		}
+	}
+});
+
+</script>
+
+
+
+
+
+
 <%@ include file="/WEB-INF/views/common/footer.jsp"%>

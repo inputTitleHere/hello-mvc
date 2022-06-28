@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.net.ssl.CertPathTrustManagerParameters;
+
 import com.kh.mvc.member.model.dto.Gender;
 import com.kh.mvc.member.model.dto.Member;
 import com.kh.mvc.member.model.dto.MemberRole;
@@ -26,7 +28,7 @@ public class MemberDao {
 	
 	public MemberDao() {
 		String filename = MemberDao.class.getResource("/sql/member/member-query.properties").getPath();
-		System.out.println("filename @ MemberDao = "+filename);
+		//System.out.println("filename @ MemberDao = "+filename);
 		
 		try {
 			prop.load(new FileReader(filename));
@@ -293,6 +295,27 @@ public class MemberDao {
 		}
 		
 		return totalContent;
+	}
+
+	public int updateMemberRole(Connection conn, Member member) {
+		PreparedStatement pstmt = null;
+		// No resultset
+		int result = 0;
+		String sql = prop.getProperty("updateMemberRole");
+		
+		try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, member.getMemberRole().name());
+			pstmt.setString(2, member.getMemberId());
+			result = pstmt.executeUpdate();
+		}catch(Exception e) {
+			throw new MemberException("회원권한정보 수정 오류",e);
+		}finally {
+			close(pstmt);
+		}
+		
+		
+		return result;
 	}
 }
 
