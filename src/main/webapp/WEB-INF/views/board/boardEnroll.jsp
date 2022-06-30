@@ -20,7 +20,7 @@ function boardValidate(){
 <form
 	name="boardEnrollFrm"
 	action="<%=request.getContextPath() %>/board/boardEnroll" 
-	method="post">
+	method="post" enctype="multipart/form-data">
 	<table id="tbl-board-view">
 	<tr>
 		<th>제 목</th>
@@ -55,7 +55,7 @@ function boardValidate(){
 // boardEnrollFrm 유효성 검사.
 document.boardEnrollFrm.onsubmit=(e)=>{
 	// 제목을 작성하지 않는 경우 폼 제출 불가.
-	if(!/^(.|\n)+$/.test(frm.content.title))){
+	if(!/^.+$/.test(frm.content.title))){
 		alert("제목을 작성하세요");
 		return false;
 	}

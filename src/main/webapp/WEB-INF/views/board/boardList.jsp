@@ -1,3 +1,4 @@
+<%@page import="com.kh.mvc.common.HelloMvcUtils"%>
 <%@page import="com.kh.mvc.board.model.dto.BoardExt"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="com.kh.mvc.board.model.dto.Board"%>
@@ -34,7 +35,9 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 		%>
 		<tr>
 			<td><%=b.getNo() %></td>
-			<td><%=b.getTitle() %></td>
+			<td>
+				<a href="<%=request.getContextPath()%>/board/boardView?no=<%=b.getNo()%>"><%=HelloMvcUtils.escapeXml(b.getTitle()) %></a>
+			</td>
 			<td><%=b.getWriter() %></td>
 			<td><%=sdf.format(b.getRegDate()) %></td>
 			<% if(b.getAttachmentCount()>0){ %>

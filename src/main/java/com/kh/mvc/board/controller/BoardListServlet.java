@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.kh.mvc.board.model.dto.Board;
-import com.kh.mvc.board.model.service.BoardSerivce;
+import com.kh.mvc.board.model.service.BoardService;
 import com.kh.mvc.common.HelloMvcUtils;
 import com.kh.mvc.member.model.service.MemberService;
 
@@ -27,7 +27,7 @@ import com.kh.mvc.member.model.service.MemberService;
 @WebServlet("/board/boardList")
 public class BoardListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private BoardSerivce boardService = new BoardSerivce();
+	private BoardService boardService = new BoardService();
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
