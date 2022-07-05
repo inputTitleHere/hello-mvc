@@ -75,7 +75,7 @@ public class BoardEnrollServlet extends HttpServlet {
 			String title = multiReq.getParameter("title");
 			String writer = multiReq.getParameter("writer");
 			String content = multiReq.getParameter("content");
-			BoardExt board = new BoardExt(0,title,writer,content,0,null); 
+			BoardExt board = new BoardExt(0,title,writer,content,0,null,0); 
 			
 			Enumeration<String> filenames = multiReq.getFileNames();
 			while(filenames.hasMoreElements()) {

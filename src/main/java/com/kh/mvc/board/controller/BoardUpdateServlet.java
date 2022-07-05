@@ -60,12 +60,30 @@ public class BoardUpdateServlet extends HttpServlet {
 		String title = multiReq.getParameter("title");
 		String content = multiReq.getParameter("content");
 		String writer = multiReq.getParameter("writer");
-		BoardExt board = new BoardExt(no,title,writer,content,0,null); 
+		BoardExt board = new BoardExt(no,title,writer,content,0,null,0); 
 		
 		// boardNo를 가져와서 attachment DB에 쿼리, 이 boardNo 소속의 attachments를 가져옴. (없으면 빈 ArrayList이다.)
 		List<Attachment> attachments = boardService.findAttachmentByBoardNo(no);
 		
+		// 강사님 삭제파일 코드
+		String[] delFiles=multiReq.getParameterValues("delFile");
+		if(delFiles!=null) {
+			for(String temp : delFiles) {
+				int attachNo=Integer.parseInt(temp);
+				// 첨부파일 삭제
+				Attachment attach = boardService.findattachmentByNo(attachNo);
+				File delFile = new File(saveDirectory, attach.getRenamedFilename());
+				delFile.delete();
+				
+				int result =boardService.removeAttachmentByNo(attachNo);
+			}
+		}
+		// 강사님 삭제파일 코드 끝
+		
+		
+		
 //		만약 기존파일을 삭제하고 신규파일을 넣는 경우 기존 파일 삭제.
+		
 		Set<String> originalFilenames = new HashSet<>();
 		Enumeration<String> filenames = multiReq.getFileNames();
 		while(filenames.hasMoreElements()) {
@@ -81,6 +99,7 @@ public class BoardUpdateServlet extends HttpServlet {
 			
 			}
 		}
+		/*
 		for(Attachment a : attachments) {
 			if(!originalFilenames.contains(a.getOriginalFilename())) {
 				int result = boardService.removeAttachmentByNo(a.getNo());
@@ -88,13 +107,12 @@ public class BoardUpdateServlet extends HttpServlet {
 				delFile.delete();
 			}
 		}
-		
+		*/
 		// 업무로직?
 		int result = boardService.updateBoard(board);
-		
-		
-		String referer = request.getHeader("Referer");
-		response.sendRedirect(referer);
+
+		// 리다이렉트
+		response.sendRedirect(request.getContextPath()+"/board/boardView?no="+board.getNo());
 	}
 
 }

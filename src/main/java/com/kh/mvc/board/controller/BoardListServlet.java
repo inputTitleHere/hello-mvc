@@ -48,8 +48,8 @@ public class BoardListServlet extends HttpServlet {
 			param.put("end", end);
 			// load Board page from DB
 			List<Board>boardList = boardService.loadBoard(param);
-			// b. pagebar generation
 			
+			// b. pagebar generation
 			int totalContent = boardService.getTotalContentCount();
 			String url = request.getRequestURI();
 			String pagebar = HelloMvcUtils.getPagebar(cPage, numPerPage, totalContent, url);

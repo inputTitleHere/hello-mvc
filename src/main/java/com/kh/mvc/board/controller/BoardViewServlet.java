@@ -1,6 +1,8 @@
 package com.kh.mvc.board.controller;
 
 import java.io.IOException;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.kh.mvc.board.model.dto.Board;
+import com.kh.mvc.board.model.dto.BoardComment;
 import com.kh.mvc.board.model.service.BoardService;
 import com.kh.mvc.common.HelloMvcUtils;
 
@@ -58,6 +61,11 @@ public class BoardViewServlet extends HttpServlet {
 			// 게시글 조회 및 조회수 증가처리
 			Board board = hasRead ? boardService.findByNo(no):boardService.findByNo(no,hasRead); // Board으로 받지만 attachment를 함유하는 BoardExt형식이다.
 			
+			List<BoardComment> commentList = boardService.findBoardCommentByBoardNo(no);
+			System.out.println("@BoardViewServlet : commentList = "+commentList);
+			
+			
+			
 			// XSS 공격 대비 : Cross-Site Scripting 공격 (신뢰할 수 없는 사용자 입력값을 그대로 처리하는 것) -> 2008년 옥션 개인정보 사태때부터 있음.
 			board.setTitle(HelloMvcUtils.escapeXml(board.getTitle()));
 			board.setContent(HelloMvcUtils.escapeXml(board.getContent()));
@@ -69,6 +77,7 @@ public class BoardViewServlet extends HttpServlet {
 			
 			// 3 view 처리
 			request.setAttribute("board", board);
+			request.setAttribute("commentList", commentList);
 			request.getRequestDispatcher("/WEB-INF/views/board/boardView.jsp").forward(request, response);
 			
 			

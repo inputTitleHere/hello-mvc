@@ -74,8 +74,8 @@ public class MemberLoginServlet extends HttpServlet {
 			//4 응답메시지 
 //		RequestDispatcher reqDispatcher = request.getRequestDispatcher("/index.jsp");
 //		reqDispatcher.forward(request, response);
-			
-			response.sendRedirect(request.getContextPath()+"/"); // /mvc와 동일한 효과 => /mvc/으로 끝내기 마무리를 하자.
+			String location = request.getHeader("Referer");
+			response.sendRedirect(location); // /mvc와 동일한 효과 => /mvc/으로 끝내기 마무리를 하자.
 		} catch (Exception e) {
 			e.printStackTrace(); // 로깅
 			throw e; // tomcat에게 예외 투척

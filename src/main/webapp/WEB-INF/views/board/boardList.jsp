@@ -37,6 +37,10 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 			<td><%=b.getNo() %></td>
 			<td>
 				<a href="<%=request.getContextPath()%>/board/boardView?no=<%=b.getNo()%>"><%=HelloMvcUtils.escapeXml(b.getTitle()) %></a>
+				<%-- 여기에 댓글 개수 추가. --%>
+				<%if(b.getCommentCount()>0){%>
+				 [<%=b.getCommentCount() %>]
+				<%} %>
 			</td>
 			<td><%=b.getWriter() %></td>
 			<td><%=sdf.format(b.getRegDate()) %></td>

@@ -6,6 +6,7 @@ import java.util.Map;
 import com.kh.mvc.board.model.dao.BoardDao;
 import com.kh.mvc.board.model.dto.Attachment;
 import com.kh.mvc.board.model.dto.Board;
+import com.kh.mvc.board.model.dto.BoardComment;
 import com.kh.mvc.board.model.dto.BoardExt;
 
 import static com.kh.mvc.common.JdbcTemplate.*;
@@ -150,13 +151,10 @@ public class BoardService {
 		int result;
 		try {
 
-			// board table에 insert
+			// 게시글 수정 
 			result = boardDao.updateBoard(conn, board);
+			
 			List<Attachment> attachments = board.getAttachments();
-
-			// 방금 등록된 board.no 컬럼값 조회.
-			//
-//			getLastBoardNo = select seq_board_no.currval from dual
 
 			if (attachments != null && !attachments.isEmpty()) {
 				for (Attachment attach : attachments) {
@@ -172,6 +170,47 @@ public class BoardService {
 		} finally {
 			close(conn);
 		}
+		return result;
+	}
+
+	public int insertBoardComment(BoardComment boardComment) {
+		Connection conn = getConnection();
+		int result = 0;
+		try {
+			result = boardDao.insertBoardComment(conn, boardComment);
+			commit(conn);
+		}catch(Exception e) {
+			rollback(conn);
+			throw e;
+		}finally {
+			close(conn);
+		}
+		return result;
+		
+	}
+
+	public List<BoardComment> findBoardCommentByBoardNo(int boardNo) {
+		Connection conn = getConnection();
+		List<BoardComment> commentList = boardDao.findBoardCommentByBoardNo(conn,boardNo);
+		
+		close(conn);
+		return commentList;
+	}
+
+	public int deleteCommentByNo(int no) {
+		Connection conn = getConnection();
+		int result =0;
+		
+		try {
+			result = boardDao.deleteCommentByNo(conn, no);
+			commit(conn);
+		}catch(Exception e) {
+			rollback(conn);
+		}finally {
+			close(conn);
+		}
+		
+		
 		return result;
 	}
 

@@ -31,12 +31,20 @@ List<Attachment> attachments = board.getAttachments();
 		<th>첨부파일</th>
 		<td >
 		<%
-		Iterator<Attachment> itr = attachments.iterator();
-		String upFile1 = itr.hasNext()?itr.next().getOriginalFilename():"";
-		String upFile2 = itr.hasNext()?itr.next().getOriginalFilename():"";
+		if(attachments!=null && !attachments.isEmpty()){
+			for(int i=0;i<attachments.size();i++){
+				Attachment attach = attachments.get(i);
 		%>
-			<input type="file" name="upFile1" value="<%=upFile1%>">
-			<input type="file" name="upFile2" value="<%=upFile2%>">
+			<img src="<%=request.getContextPath() %>/images/file.png" alt="" width="16px" />
+			<%=attach.getOriginalFilename()%>
+			<input type="checkbox" name="delFile" id="delFile<%=i %>" value="<%=attach.getNo() %>" />
+			<label for="delFile">삭제</label>
+			<br />
+		<%
+		}}
+		%>
+			<input type="file" name="upFile1">
+			<input type="file" name="upFile2">
 		</td>
 	</tr>
 	<tr>

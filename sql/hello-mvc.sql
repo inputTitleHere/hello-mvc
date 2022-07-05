@@ -324,3 +324,120 @@ commit;
 --select * from board;
 select no,(select count(*) from attachment where attachment.no=board.no)"첨부개수" from board;
 
+
+create table board_comment(
+    no number, -- pk용
+    comment_level number default 1, -- 댓글 1, 대댓글 2 ... 
+    writer varchar2(15),
+    content varchar2(2000),
+    board_no number, -- fk 존재(모든 댓글은 어떤 게시글의 소속이다)
+    comment_ref number, -- 대댓글인 경우 댓글 참조(대댓글인 경우만 유효) // 댓글-null  ~ 대댓글 - 댓글의no(pk)
+    reg_date date default sysdate,
+    constraint pk_board_comment_no primary key(no),
+    constraint fk_board_comment_writer foreign key(writer) references member(member_id) on delete set null,
+    constraint fk_board_comment_board_no foreign key(board_no) references board(no) on delete cascade,
+    constraint fk_board_comment_comment_ref foreign key(comment_ref) references board_comment(no) on delete cascade
+);
+
+create sequence seq_board_comment_no;
+
+
+comment on column board_comment.no is '게시판댓글번호';
+comment on column board_comment.comment_level is '게시판댓글 레벨';
+comment on column board_comment.writer is '게시판댓글 작성자';
+comment on column board_comment.content is '게시판댓글';
+comment on column board_comment.board_no is '참조원글번호';
+comment on column board_comment.comment_ref is '게시판댓글 참조번호';
+comment on column board_comment.reg_date is '게시판댓글 작성일';
+
+select * from board_comment order by no;
+
+-- 181
+insert into board_comment values(seq_board_comment_no.nextval, default, 'honggd','댓글 얍얍', 181, null, default);
+insert into board_comment values(seq_board_comment_no.nextval, default, 'admin','어드민이 당신을 주시합니다.', 181, null, default);
+insert into board_comment values(seq_board_comment_no.nextval, default, 'zxcv','비가와요 비가와', 181, null, default);
+
+-- 181 대댓글
+insert into board_comment values(seq_board_comment_no.nextval, 2, 'honggd','누구? 저요?', 181, 3, default);
+insert into board_comment values(seq_board_comment_no.nextval, 2, 'zxcv','점마 왜 파래지냐', 181, 3, default);
+
+-- 181 대대댓글
+insert into board_comment values(seq_board_comment_no.nextval, 3, 'honggd','아 안돼!', 181, 6, default);
+
+
+-- 계층형 쿼리
+select 
+    *
+from 
+    board_comment
+where 
+    board_no=181
+start with 
+    comment_level = 1
+connect by
+    prior no=comment_ref
+order siblings by
+    no desc;
+
+--select * from board_comment where board_no= ? start with comment_level = 1 connect by prior no=comment_reforder siblings by no asc
+
+select 
+    *
+from 
+    board_comment
+start with 
+    comment_level = 1
+connect by
+    prior no=comment_ref
+order siblings by
+    no desc;
+
+--delete from board_comment where board_no=181;
+
+-- 조직도 KH계정쪽 (employee)그거
+select * from job;
+
+select * from employee;
+start with dept_code='D1'
+connect by prior job_code=job_code;
+
+select
+    level, -- 계층형 쿼리에서만 사용가능한 가상 컬럼
+    emp_id,
+    lpad(' ',(level-1)*8)||emp_name 조직도,
+    manager_id
+from
+    employee
+start with
+    emp_id = 200
+connect by
+    prior emp_id = manager_id
+order siblings by emp_id; -- 이런게 있다. 
+
+commit;
+
+
+
+select * from board_comment where board_no= 241 start with comment_level = 1 connect by prior no=comment_ref order siblings by no asc;
+select * from board_comment where board_no=241;
+
+
+select 
+    *
+from (
+    select 
+        row_number() over(order by reg_date desc) rnum, 
+        (select count(*) from board_comment bc where bc.board_no = b.no) comment_count,
+        b.*, 
+        (select count(*)from attachment where board_no=b.no) attach_count 
+    from board b 
+    ) 
+where 
+    rnum between 1 and 10;
+
+
+
+
+
+
+

@@ -8,12 +8,23 @@ public class BoardExt extends Board {
 
 	private int attachmentCount;
 	private List<Attachment> attachments = new ArrayList<>();
+	private int commentCount;
 	
-	
-	public BoardExt(int no, String title, String writer, String content, int readCount, Timestamp regDate) {
+	public BoardExt(int no, String title, String writer, String content, int readCount, Timestamp regDate, int commentCount) {
 		super(no, title, writer, content, readCount, regDate);
+		this.commentCount=commentCount;
 	}
 	
+
+	public int getCommentCount() {
+		return commentCount;
+	}
+
+
+	public void setCommentCount(int commentCount) {
+		this.commentCount = commentCount;
+	}
+
 
 	public BoardExt() {
 	}
