@@ -26,7 +26,7 @@ public class MemberLogoutServlet extends HttpServlet {
 			session.invalidate();
 		}
 		// 2. 리다이렉트 처리로 로그아웃 
-		response.sendRedirect(request.getContextPath()+"/");
+		response.sendRedirect(request.getContextPath()+"/index.jsp"); // 뒤에 그냥 "/"해줘도 된다.
 	}
 
 
